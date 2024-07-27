@@ -1,0 +1,28 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "WiimoteLib/1.7.0": {
+        "runtime": {
+          "lib/WiimoteLib.dll": {
+            "assemblyVersion": "1.7.0.0",
+            "fileVersion": "1.7.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "WiimoteLib/1.7.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-3ZIBwAl47Wsc8u+uRpIAri6Ndr43/DASzP1Ws8Pnm+Kx7yNwLcQalPeZbC55vZUSZBaB3qOvHrVPVmeMSdayJQ==",
+      "path": "wiimotelib/1.7.0",
+      "hashPath": "wiimotelib.1.7.0.nupkg.sha512"
+    }
+  }
+}

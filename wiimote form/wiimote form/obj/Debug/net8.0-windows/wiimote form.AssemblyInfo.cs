@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("wiimote form")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2a8b11bc287f28dcb9d597adbb325e24b9aa1a6b")]
 [assembly: System.Reflection.AssemblyProductAttribute("wiimote form")]
 [assembly: System.Reflection.AssemblyTitleAttribute("wiimote form")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

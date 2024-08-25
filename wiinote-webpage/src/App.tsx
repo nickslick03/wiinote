@@ -12,6 +12,8 @@ function App() {
   const [initialClick, setInitailClick] = createSignal(false)
   const [isHovering, setIsHovering] = createSignal(false)
 
+  const [baseSemitone, setBaseSemitone] = createSignal(0)
+
   let audioContext: AudioContext
   let oscillator: OscillatorNode
 
@@ -22,7 +24,7 @@ function App() {
 
   const handleMouseMove = (e: MouseEvent) => {
     const semitone = ((1 - (e.clientY / (e.target as HTMLDivElement).clientHeight)) * NOTE_BLOCKS) - 0.5
-    const freq = getFrequency(C_FREQUENCIES[5], semitone)
+    const freq = getFrequency(C_FREQUENCIES[5], semitone + baseSemitone())
     if (!isHovering()) {
       setIsHovering(true)
       oscillator = startOscillator(audioContext, freq)
@@ -51,9 +53,13 @@ function App() {
       <form id="input-container" class="w-fit flex flex-col gap-3">
         <label class='flex'>
           <span class='pr-2'>Base Note: </span>
-          <select name="base-letter" class='flex-1 text-sm border-black border rounded-sm'>
-            <For each={NOTE_LETTERS}>{(letter, i) =>
-              <option value={i()}>{letter}</option>
+          <select 
+            name="base-letter" 
+            class='flex-1 text-sm border-black border rounded-sm'
+            onChange={(e) => setBaseSemitone((e.target as HTMLSelectElement).selectedIndex)}  
+          >
+            <For each={NOTE_LETTERS}>{(letter) =>
+              <option>{letter}</option>
             }</For>
           </select>
         </label>

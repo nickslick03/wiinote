@@ -6,6 +6,8 @@ import { getFrequency } from './lib/getFrequency'
 import { NOTE_LETTERS } from './static/notesLetters'
 
 const NOTE_BLOCKS = 13
+const BASE_OCTAVE = 2
+const OCTAVE_RANGE = 6
 
 function App() {
 
@@ -23,8 +25,16 @@ function App() {
   }
 
   const handleMouseMove = (e: MouseEvent) => {
-    const semitone = ((1 - (e.clientY / (e.target as HTMLDivElement).clientHeight)) * NOTE_BLOCKS) - 0.5
-    const freq = getFrequency(C_FREQUENCIES[5], semitone + baseSemitone())
+    const target = (e.target as HTMLDivElement)
+
+    const octaveIndex = Math.floor((e.clientX / target.clientWidth) * OCTAVE_RANGE) + BASE_OCTAVE
+    const octaveBlockWidth = target.clientWidth / OCTAVE_RANGE
+    const xAxisSemitone = ((e.clientX - ((octaveIndex - BASE_OCTAVE) / OCTAVE_RANGE * target.clientWidth)) / (octaveBlockWidth / 12)) - 6
+
+    const semitone = ((1 - (e.clientY / target.clientHeight)) * NOTE_BLOCKS) - 0.5
+    
+    console.log({ semitone })
+    const freq = getFrequency(C_FREQUENCIES[octaveIndex], (semitone + baseSemitone()) + xAxisSemitone)
     if (!isHovering()) {
       setIsHovering(true)
       oscillator = startOscillator(audioContext, freq)
@@ -49,7 +59,7 @@ function App() {
       >
         <p class='text-3xl'>Click to start the page.</p>
       </div>
-      <h1 class='text-3xl font-bold mb-5'>Wiinote</h1>
+      {/* {<h1 class='text-3xl font-bold mb-5'>Wiinote</h1>
       <form id="input-container" class="w-fit flex flex-col gap-3">
         <label class='flex'>
           <span class='pr-2'>Base Note: </span>
@@ -63,24 +73,26 @@ function App() {
             }</For>
           </select>
         </label>
-      </form>
+      </form>} */}
       <div 
-        id="notebar"
-        class='absolute top-0 left-1/2 -translate-x-1/2 w-24 h-screen z-10'
+        id="notegrid"
+        class='absolute top-0 left-0 w-screen h-screen z-10'
         onMouseMove={handleMouseMove}
         onMouseOut={handleMouseOut}
       ></div>
-      <div 
-        id="notebar-colors"
-        class='absolute top-0 left-1/2 -translate-x-1/2 w-24 h-screen 
-        border-x-2 border-black flex flex-col'
-      >
-        <For each={Array(NOTE_BLOCKS).fill(0)}>{(_, i) =>
-          <div
-            data-semitone={(NOTE_BLOCKS + 1) - i()}
-            style={{ opacity: (i() / NOTE_BLOCKS) }}
-            class='flex-1 bg-blue-400'
-          ></div>
+      <div class={`grid grid-cols-${OCTAVE_RANGE} h-screen`}>
+        <For each={Array(13)}>{(_, semitone) => 
+          <For each={Array(OCTAVE_RANGE)}>{(_, octave) => 
+            <div 
+              class='border border-black flex items-center justify-end pr-2 text-3xl font-bold'
+              style={{
+                'background-color': `hsl(${((semitone() / 12) * 356)}, 65%, ${((octave() / OCTAVE_RANGE) * 80) + 20}%)`
+              }}
+            >
+              {(semitone() === 0 ? 'C' : NOTE_LETTERS[12 - semitone()]) 
+              + (octave() + (semitone() === 0 ? 2 : 1))}
+            </div>
+          }</For>
         }</For>
       </div>
     </>

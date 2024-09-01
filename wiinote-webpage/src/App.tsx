@@ -80,7 +80,7 @@ function App() {
         onMouseMove={handleMouseMove}
         onMouseOut={handleMouseOut}
       ></div>
-      <div class={`grid grid-cols-${OCTAVE_RANGE} h-screen`}>
+      <div class='grid grid-cols-6 h-screen'>
         <For each={Array(13)}>{(_, semitone) => 
           <For each={Array(OCTAVE_RANGE)}>{(_, octave) => 
             <div 

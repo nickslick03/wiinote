@@ -36,3 +36,4 @@ C:\Users\nickk\OneDrive\Desktop\wiinote\wiimote form\wiimote form\obj\Debug\net8
 C:\Users\nickk\OneDrive\Desktop\wiinote\wiimote form\wiimote form\obj\Debug\net8.0-windows\wiimote form.pdb
 C:\Users\nickk\OneDrive\Desktop\wiinote\wiimote form\wiimote form\obj\Debug\net8.0-windows\wiimote form.genruntimeconfig.cache
 C:\Users\nickk\OneDrive\Desktop\wiinote\wiimote form\wiimote form\obj\Debug\net8.0-windows\ref\wiimote form.dll
+C:\Users\nickk\OneDrive\Desktop\wiinote\wiimote form\wiimote form\obj\Debug\net8.0-windows\wiimote form.sourcelink.json

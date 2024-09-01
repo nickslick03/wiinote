@@ -9,6 +9,13 @@ namespace wiimote_form
     {
 
         Wiimote wiimote;
+        const int OCTAVES = 6;
+
+        const double IR_X_RANGE = 1023.0;
+        const double IR_Y_RANGE = 767.0;
+
+        static int currentOctave = 0;
+        static int nextOctave = 0;
 
         [StructLayout(LayoutKind.Sequential)]
         public struct POINT
@@ -50,48 +57,86 @@ namespace wiimote_form
         void wiimote_WiimoteChanged(object sender, WiimoteChangedEventArgs e)
         {
             var B = e.WiimoteState.ButtonState.B;
+            var left = e.WiimoteState.ButtonState.Left;
+            var right = e.WiimoteState.ButtonState.Right;
+
             var accelY = e.WiimoteState.AccelState.Values.Y;
-            //(0-1023 for X, 0-767 for Y)
             if (e.WiimoteState.IRState.IRSensors.Length > 0)
             {
                 IRSensor irSensor = e.WiimoteState.IRState.IRSensors[0];
                 Console.WriteLine(irSensor.ToString());
                 if (irSensor.Found)
                 {
-                    int X = irSensor.RawPosition.X;
-                    int Y = irSensor.RawPosition.Y;
+                    int X;
+                    int Y;
 
-                    X = (int)(((double)X / 1023.0) * width);
-                    Y = (int)(((double)Y / 767.0) * height);
+                    int irX = irSensor.RawPosition.X;
+                    int irY = irSensor.RawPosition.Y;
+                    Y = (int)(((double)irY / IR_Y_RANGE) * height);
 
-                    X = width - X;
+                    int mouseX = B 
+                        ? width - (int)(((double)irX / IR_X_RANGE) * width)
+                        : MousePosition.X;
 
-                    Console.WriteLine($"IR Point: ({X}, {Y})");
-                    SetCursorPos(MousePosition.X, Y);
+                    if (currentOctave == nextOctave)
+                    {
+                        if (left) nextOctave--;
+                        if (right) nextOctave++;
+                    }
+
+                    if (nextOctave >= OCTAVES)
+                    {
+                        nextOctave = OCTAVES - 1;
+                    } 
+                    else if (nextOctave < 0)
+                    {
+                        nextOctave = 0;
+                    }
+
+                    if (nextOctave != currentOctave)
+                    {
+                        X = MousePosition.X + (nextOctave - currentOctave) * 20;
+
+                        int completionX = (int)((nextOctave / (double)OCTAVES) * width) + (width / (OCTAVES * 2));
+
+                        if (nextOctave > currentOctave && X >= completionX 
+                            || nextOctave < currentOctave && X <= completionX)
+                        {
+                            currentOctave = nextOctave;
+                        }
+                    }
+                    else
+                    {
+                        X = (int)((currentOctave / (double)OCTAVES) * width) + (width / (OCTAVES * 2));
+                    }
+
+                    txtDebug.Text = currentOctave.ToString();
+
+                    SetCursorPos(X, Y);
                 }
             }
-            if (B)
-            {
-                var height = Screen.PrimaryScreen.Bounds.Height;
-                POINT point;
-                GetCursorPos(out point);
+            //if (B)
+            //{
+            //    var height = Screen.PrimaryScreen.Bounds.Height;
+            //    POINT point;
+            //    GetCursorPos(out point);
 
 
-                // move by gyro sensor (continuous)
-                //var newY = ((accelY + 1) / 2) * height;
-                //if (newY < 0) newY = 0;
-                //else if (newY > height) newY = height;
-                //SetCursorPos(MousePosition.X, (int)newY);
+            //    move by gyro sensor(continuous)
+            //    var newY = ((accelY + 1) / 2) * height;
+            //    if (newY < 0) newY = 0;
+            //    else if (newY > height) newY = height;
+            //    SetCursorPos(MousePosition.X, (int)newY);
 
-                // move by gyro sensor (to nearest half note)
-                //var newYRounded = (int)(((Math.Floor((accelY + 1) / 2 * 12) + 0.5) / 12) * height);
-                //var newY = ((accelY + 1) / 2) * height;
-                //if (newYRounded < 0) newYRounded = 0;
-                //else if (newYRounded > height) newYRounded = height;
-                //if (Math.Abs(newY - newYRounded) < 40)
-                //    SetCursorPos(MousePosition.X, newYRounded);
-                //txtDebug.Text = newYRounded.ToString();
-            }
+            //    move by gyro sensor(to nearest half note)
+            //    var newYRounded = (int)(((Math.Floor((accelY + 1) / 2 * 12) + 0.5) / 12) * height);
+            //    var newY = ((accelY + 1) / 2) * height;
+            //    if (newYRounded < 0) newYRounded = 0;
+            //    else if (newYRounded > height) newYRounded = height;
+            //    if (Math.Abs(newY - newYRounded) < 40)
+            //        SetCursorPos(MousePosition.X, newYRounded);
+            //    txtDebug.Text = newYRounded.ToString();
+            //}
         }
 
         private void Form1_Load(object sender, EventArgs e)

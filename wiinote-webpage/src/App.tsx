@@ -1,6 +1,6 @@
 import { createSignal, For } from 'solid-js'
 
-import { killOscillator, startOscillator, updateFrequency } from './lib/oscillator'
+import { killOscillator, setVolume, startOscillator, updateFrequency } from './lib/oscillator'
 import { C_FREQUENCIES } from './static/frequencies'
 import { getFrequency } from './lib/getFrequency'
 import { NOTE_LETTERS } from './static/notesLetters'
@@ -18,6 +18,7 @@ function App() {
 
   let audioContext: AudioContext
   let oscillator: OscillatorNode
+  let gainNode: GainNode
 
   const handleInitialClick = () => {
     audioContext = new window.AudioContext()
@@ -37,15 +38,14 @@ function App() {
     const freq = getFrequency(C_FREQUENCIES[octaveIndex], (semitone + baseSemitone()) + xAxisSemitone)
     if (!isHovering()) {
       setIsHovering(true)
-      oscillator = startOscillator(audioContext, freq)
+      const start = startOscillator(audioContext, freq)
+      oscillator = start.oscillator
+      gainNode = start.gainNode
+      setVolume(audioContext, gainNode, 0, 0.1)
+
     } else {
       updateFrequency(audioContext, oscillator, freq)
     }
-  }
-
-  const handleMouseOut = () => {
-    killOscillator(oscillator)
-    setIsHovering(false)
   }
 
   return (
@@ -78,9 +78,14 @@ function App() {
         id="notegrid"
         class='absolute top-0 left-0 w-screen h-screen z-10'
         onMouseMove={handleMouseMove}
-        onMouseOut={handleMouseOut}
+        onMouseDown={() => {
+          setVolume(audioContext, gainNode, 1, 0.1)
+        }}
+        onMouseUp={() => {
+          setVolume(audioContext, gainNode, 0, 0.1)
+        }}
       ></div>
-      <div class='grid grid-cols-6 h-screen'>
+      <div class='grid grid-cols-6 h-screen select-none'>
         <For each={Array(13)}>{(_, semitone) => 
           <For each={Array(OCTAVE_RANGE)}>{(_, octave) => 
             <div 

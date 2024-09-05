@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using WiimoteLib;
 using static System.Windows.Forms.AxHost;
+using System.Windows.Forms;
 
 namespace wiimote_form
 {
@@ -17,6 +18,8 @@ namespace wiimote_form
         static int currentOctave = 0;
         static int nextOctave = 0;
 
+        static bool isMouseDown = false;
+
         [StructLayout(LayoutKind.Sequential)]
         public struct POINT
         {
@@ -30,6 +33,65 @@ namespace wiimote_form
 
         [DllImport("user32.dll", EntryPoint = "SetCursorPos")]
         private static extern bool SetCursorPos(int x, int y);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        static extern void mouse_event(uint dwFlags, int dx, int dy, uint dwData, int dwExtraInfo);
+
+        [DllImport("user32.dll")]
+        static extern void SendInput(uint nInputs, [In] INPUT[] pInputs, int cbSize);
+
+        private const uint MOUSEEVENTF_LEFTDOWN = 0x0002;
+        private const uint MOUSEEVENTF_LEFTUP = 0x0004;
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct INPUT
+        {
+            public uint type;
+            public MOUSEINPUT mi;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct MOUSEINPUT
+        {
+            public int dx;
+            public int dy;
+            public uint mouseData;
+            public uint dwFlags;
+            public uint time;
+            public IntPtr dwExtraInfo;
+        }
+
+        public const uint INPUT_MOUSE = 0;
+        public const uint INPUT_KEYBOARD = 1;
+        public const uint INPUT_HARDWARE = 2;
+
+        public static void TriggerMouseDown()
+        {
+            INPUT[] inputs = new INPUT[1];
+            inputs[0].type = INPUT_MOUSE;
+            inputs[0].mi.dx = 0;
+            inputs[0].mi.dy = 0;
+            inputs[0].mi.mouseData = 0;
+            inputs[0].mi.dwFlags = MOUSEEVENTF_LEFTDOWN;
+            inputs[0].mi.time = 0;
+            inputs[0].mi.dwExtraInfo = IntPtr.Zero;
+
+            SendInput(1, inputs, Marshal.SizeOf(typeof(INPUT)));
+        }
+
+        public static void TriggerMouseUp()
+        {
+            INPUT[] inputs = new INPUT[1];
+            inputs[0].type = INPUT_MOUSE;
+            inputs[0].mi.dx = 0;
+            inputs[0].mi.dy = 0;
+            inputs[0].mi.mouseData = 0;
+            inputs[0].mi.dwFlags = MOUSEEVENTF_LEFTUP;
+            inputs[0].mi.time = 0;
+            inputs[0].mi.dwExtraInfo = IntPtr.Zero;
+
+            SendInput(1, inputs, Marshal.SizeOf(typeof(INPUT)));
+        }
 
         public Form1()
         {
@@ -74,9 +136,7 @@ namespace wiimote_form
                     int irY = irSensor.RawPosition.Y;
                     Y = (int)(((double)irY / IR_Y_RANGE) * height);
 
-                    int mouseX = B 
-                        ? width - (int)(((double)irX / IR_X_RANGE) * width)
-                        : MousePosition.X;
+                    int mouseX = width - (int)(((double)irX / IR_X_RANGE) * width);
 
                     if (currentOctave == nextOctave)
                     {
@@ -113,6 +173,17 @@ namespace wiimote_form
                     txtDebug.Text = currentOctave.ToString();
 
                     SetCursorPos(X, Y);
+                }
+
+                if (B && !isMouseDown)
+                {
+                    TriggerMouseDown();
+                    isMouseDown = true;
+                }
+                else if (!B && isMouseDown)
+                {
+                    TriggerMouseUp();
+                    isMouseDown = false;
                 }
             }
             //if (B)

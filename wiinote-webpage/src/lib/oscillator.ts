@@ -2,9 +2,11 @@ export function startOscillator(audioContext: AudioContext, startingFreq = 440) 
     const oscillator = audioContext.createOscillator();
     oscillator.frequency.setValueAtTime(startingFreq, audioContext.currentTime); // A4 note
     oscillator.type = 'sine';
-    oscillator.connect(audioContext.destination);
+    const gainNode = audioContext.createGain();
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
     oscillator.start();
-    return oscillator;
+    return { oscillator, gainNode }
 }
 
 export function updateFrequency(
@@ -17,4 +19,10 @@ export function updateFrequency(
 export function killOscillator(oscillator: OscillatorNode) {
     oscillator.stop();
     oscillator.disconnect();
+}
+
+export function setVolume(audioContext: AudioContext, gainNode: GainNode, toVolume: number, duration: number) {
+    const now = audioContext.currentTime;
+    const fadeEnd = now + duration;
+    gainNode.gain.linearRampToValueAtTime(toVolume, fadeEnd);
 }

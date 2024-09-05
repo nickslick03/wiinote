@@ -194,11 +194,15 @@
         
         let oscillator;
 
+        let gainNode;
+
         function startOscillator() {
             oscillator = audioContext.createOscillator();
             oscillator.frequency.setValueAtTime(440, audioContext.currentTime); // A4 note
             oscillator.type = 'sine'; // sine wave
-            oscillator.connect(audioContext.destination);
+            gainNode = audioContext.createGain();
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
             oscillator.start();
         }
         
@@ -208,6 +212,15 @@
          */
         function updateFrequency(newFrequency) {
             oscillator.frequency.setValueAtTime(newFrequency, audioContext.currentTime);
+        }
+
+        /**
+         * 
+         * @param {number} volume
+         */
+        function setVolume(volume) {
+            // Ensure the value is between 0 and 1
+            gainNode.gain.setValueAtTime(Math.max(0, Math.min(1, volume)), audioContext.currentTime);
         }
 
         notebar.addEventListener('mousemove', (e) => {

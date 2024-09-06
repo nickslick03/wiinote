@@ -1,12 +1,12 @@
 export function startOscillator(audioContext: AudioContext, startingFreq = 440) {
     const oscillator = audioContext.createOscillator();
-    oscillator.frequency.setValueAtTime(startingFreq, audioContext.currentTime); // A4 note
+    oscillator.frequency.setValueAtTime(startingFreq, audioContext.currentTime);
     oscillator.type = 'sine';
     const gainNode = audioContext.createGain();
     oscillator.connect(gainNode);
     gainNode.connect(audioContext.destination);
     oscillator.start();
-    return { oscillator, gainNode }
+    return { oscillator, gainNode };
 }
 
 export function updateFrequency(

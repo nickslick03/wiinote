@@ -14,6 +14,7 @@ function App() {
   const [initialClick, setInitialClick] = createSignal(false)
   const [isHovering, setIsHovering] = createSignal(false)
   const [showMenu, setShowMenu] = createSignal(false)
+  const [isInvertedOctaves, setIsInvertedOctaves] = createSignal(false)
 
   const [baseSemitone, setBaseSemitone] = createSignal(0)
 
@@ -37,12 +38,22 @@ function App() {
 
   const handleMouseMove = (e: MouseEvent) => {
     const target = (e.target as HTMLDivElement)
-
     const octaveIndex = Math.floor((e.clientX / target.clientWidth) * OCTAVE_RANGE) + BASE_OCTAVE
+    const invert = isInvertedOctaves() && (octaveIndex - BASE_OCTAVE) % 2 === 1
     const octaveBlockWidth = target.clientWidth / OCTAVE_RANGE
-    const xAxisSemitone = ((e.clientX - ((octaveIndex - BASE_OCTAVE) / OCTAVE_RANGE * target.clientWidth)) / (octaveBlockWidth / 12)) - 6
-    const semitone = ((1 - (e.clientY / target.clientHeight)) * NOTE_BLOCKS) - 0.5
-    console.log({ semitone })
+    let semitone = ((1 - (e.clientY / target.clientHeight)) * NOTE_BLOCKS) - 0.5
+    const outer = 
+      Math.floor((e.clientX - ((octaveIndex - BASE_OCTAVE) / OCTAVE_RANGE * target.clientWidth)) / (octaveBlockWidth / 2)) === (((octaveIndex - BASE_OCTAVE) % 2 === 0) ? 1 : 0)
+    const xAxisRange = isInvertedOctaves() && outer
+      ? 24 - (semitone * 2)
+      : isInvertedOctaves()
+      ? semitone * 2
+      : 12;
+    let xAxisSemitone = ((e.clientX - ((octaveIndex - BASE_OCTAVE) / OCTAVE_RANGE * target.clientWidth)) / (octaveBlockWidth / xAxisRange)) - (xAxisRange / 2)
+    if (invert) {
+      semitone = 12 - semitone
+    }
+    //console.log({ octaveIndex, semitone, outer, xAxisSemitone, xAxisRange })
     const freq = getFrequency(C_FREQUENCIES[octaveIndex], (semitone + baseSemitone()) + xAxisSemitone)
     if (!isHovering()) {
       setIsHovering(true)
@@ -80,7 +91,7 @@ function App() {
       >
         <div class='bg-white rounded-md p-4 flex flex-col gap-5'>
           <h1 class='text-3xl font-bold text-center'>Wiinote</h1>
-          <form id="input-container" class="w-fit flex flex-col gap-3">
+          <form id="input-container" class="w-fit flex flex-col gap-5">
             <label class='flex'>
               <span class='pr-2'>Base Note: </span>
               <select 
@@ -92,6 +103,14 @@ function App() {
                   <option>{letter}</option>
                 }</For>
               </select>
+            </label>
+            <label class='flex'>
+              <span class='pr-2'>Invert every other octave: </span>
+              <input 
+                type="checkbox"
+                value={isInvertedOctaves() ? "checked" : undefined}
+                onclick={() => setIsInvertedOctaves(o => !o)}
+              />
             </label>
           </form>
           <footer class='text-center'>
@@ -111,12 +130,13 @@ function App() {
         }}
       ></div>
       <div class='grid grid-cols-6 h-screen select-none'>
-        <For each={Array(13)}>{(_, semitone) => 
+        <For each={Array(NOTE_BLOCKS)}>{(_, semitone) => 
           <For each={Array(OCTAVE_RANGE)}>{(_, octave) => 
             <div 
               class='border border-black flex items-center justify-end pr-2 text-3xl font-bold'
               style={{
-                'background-color': `hsl(${calculateColor(baseSemitone(), semitone())}, 65%, ${((octave() / OCTAVE_RANGE) * 80) + 20}%)`
+                'background-color': `hsl(${calculateColor(baseSemitone(), semitone())}, 65%, ${((octave() / OCTAVE_RANGE) * 80) + 20}%)`,
+                'order': `${Math.abs(((isInvertedOctaves() && octave() % 2 === 1) ? (NOTE_BLOCKS * OCTAVE_RANGE - OCTAVE_RANGE) : 0) - (semitone() * 6)) + octave()}`
               }}
             >
               {(semitone() === 0 ? getNoteLetter(0) : getNoteLetter(12 - semitone())) 

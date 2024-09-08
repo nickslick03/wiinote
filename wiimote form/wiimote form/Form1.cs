@@ -126,7 +126,6 @@ namespace wiimote_form
             if (e.WiimoteState.IRState.IRSensors.Length > 0)
             {
                 IRSensor irSensor = e.WiimoteState.IRState.IRSensors[0];
-                Console.WriteLine(irSensor.ToString());
                 if (irSensor.Found)
                 {
                     int X;
@@ -170,8 +169,6 @@ namespace wiimote_form
                         X = (int)((currentOctave / (double)OCTAVES) * width) + (width / (OCTAVES * 2));
                     }
 
-                    txtDebug.Text = currentOctave.ToString();
-
                     SetCursorPos(X, Y);
                 }
 
@@ -186,28 +183,6 @@ namespace wiimote_form
                     isMouseDown = false;
                 }
             }
-            //if (B)
-            //{
-            //    var height = Screen.PrimaryScreen.Bounds.Height;
-            //    POINT point;
-            //    GetCursorPos(out point);
-
-
-            //    move by gyro sensor(continuous)
-            //    var newY = ((accelY + 1) / 2) * height;
-            //    if (newY < 0) newY = 0;
-            //    else if (newY > height) newY = height;
-            //    SetCursorPos(MousePosition.X, (int)newY);
-
-            //    move by gyro sensor(to nearest half note)
-            //    var newYRounded = (int)(((Math.Floor((accelY + 1) / 2 * 12) + 0.5) / 12) * height);
-            //    var newY = ((accelY + 1) / 2) * height;
-            //    if (newYRounded < 0) newYRounded = 0;
-            //    else if (newYRounded > height) newYRounded = height;
-            //    if (Math.Abs(newY - newYRounded) < 40)
-            //        SetCursorPos(MousePosition.X, newYRounded);
-            //    txtDebug.Text = newYRounded.ToString();
-            //}
         }
 
         private void Form1_Load(object sender, EventArgs e)

@@ -6,10 +6,12 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build-inline": "tsc -b && vite build --config vite.config.inline.ts",
     "preview": "vite preview"
   },
   "dependencies": {
-    "solid-js": "^1.8.20"
+    "solid-js": "^1.8.20",
+    "vite-plugin-singlefile": "^2.0.2"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.20",

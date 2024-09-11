@@ -1,0 +1,6 @@
+C:\Users\nickk\OneDrive\Desktop\wiinote\wiinote-form\wiimote form\bin\Release\net8.0-windows\publish\wiinote-form.exe
+C:\Users\nickk\OneDrive\Desktop\wiinote\wiinote-form\wiimote form\bin\Release\net8.0-windows\publish\wiinote-form.dll
+C:\Users\nickk\OneDrive\Desktop\wiinote\wiinote-form\wiimote form\bin\Release\net8.0-windows\publish\wiinote-form.deps.json
+C:\Users\nickk\OneDrive\Desktop\wiinote\wiinote-form\wiimote form\bin\Release\net8.0-windows\publish\wiinote-form.runtimeconfig.json
+C:\Users\nickk\OneDrive\Desktop\wiinote\wiinote-form\wiimote form\bin\Release\net8.0-windows\publish\wiinote-form.pdb
+C:\Users\nickk\OneDrive\Desktop\wiinote\wiinote-form\wiimote form\bin\Release\net8.0-windows\publish\WiimoteLib.dll

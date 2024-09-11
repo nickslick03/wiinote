@@ -1,0 +1,128 @@
+{
+  "version": 3,
+  "targets": {
+    "net8.0-windows7.0": {
+      "WiimoteLib/1.7.0": {
+        "type": "package",
+        "compile": {
+          "lib/WiimoteLib.dll": {}
+        },
+        "runtime": {
+          "lib/WiimoteLib.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "WiimoteLib/1.7.0": {
+      "sha512": "3ZIBwAl47Wsc8u+uRpIAri6Ndr43/DASzP1Ws8Pnm+Kx7yNwLcQalPeZbC55vZUSZBaB3qOvHrVPVmeMSdayJQ==",
+      "type": "package",
+      "path": "wiimotelib/1.7.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "content/WiimoteLib_Extras/MSRS/Wiimote.Y2007.M06.Proxy.dll",
+        "content/WiimoteLib_Extras/MSRS/Wiimote.Y2007.M06.Proxy.xml",
+        "content/WiimoteLib_Extras/MSRS/Wiimote.Y2007.M06.Transform.dll",
+        "content/WiimoteLib_Extras/MSRS/Wiimote.Y2007.M06.dll",
+        "content/WiimoteLib_Extras/docs/WiimoteLib.chm",
+        "content/WiimoteLib_Extras/docs/copyright.txt",
+        "content/WiimoteLib_Extras/docs/license.txt",
+        "content/WiimoteLib_Extras/samples.zip",
+        "content/WiimoteLib_Readme.txt",
+        "lib/WiimoteLib.dll",
+        "wiimotelib.1.7.0.nupkg.sha512",
+        "wiimotelib.nuspec"
+      ]
+    }
+  },
+  "projectFileDependencyGroups": {
+    "net8.0-windows7.0": [
+      "WiimoteLib >= 1.7.0"
+    ]
+  },
+  "packageFolders": {
+    "C:\\Users\\nickk\\.nuget\\packages\\": {}
+  },
+  "project": {
+    "version": "1.0.0",
+    "restore": {
+      "projectUniqueName": "C:\\Users\\nickk\\OneDrive\\Desktop\\wiinote\\wiinote-form\\wiimote form\\wiinote-form.csproj",
+      "projectName": "wiinote-form",
+      "projectPath": "C:\\Users\\nickk\\OneDrive\\Desktop\\wiinote\\wiinote-form\\wiimote form\\wiinote-form.csproj",
+      "packagesPath": "C:\\Users\\nickk\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\nickk\\OneDrive\\Desktop\\wiinote\\wiinote-form\\wiimote form\\obj\\",
+      "projectStyle": "PackageReference",
+      "configFilePaths": [
+        "C:\\Users\\nickk\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+      ],
+      "originalTargetFrameworks": [
+        "net8.0-windows"
+      ],
+      "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "https://api.nuget.org/v3/index.json": {}
+      },
+      "frameworks": {
+        "net8.0-windows7.0": {
+          "targetAlias": "net8.0-windows",
+          "projectReferences": {}
+        }
+      },
+      "warningProperties": {
+        "warnAsError": [
+          "NU1605"
+        ]
+      },
+      "restoreAuditProperties": {
+        "enableAudit": "true",
+        "auditLevel": "low",
+        "auditMode": "direct"
+      }
+    },
+    "frameworks": {
+      "net8.0-windows7.0": {
+        "targetAlias": "net8.0-windows",
+        "dependencies": {
+          "WiimoteLib": {
+            "target": "Package",
+            "version": "[1.7.0, )"
+          }
+        },
+        "imports": [
+          "net461",
+          "net462",
+          "net47",
+          "net471",
+          "net472",
+          "net48",
+          "net481"
+        ],
+        "assetTargetFallback": true,
+        "warn": true,
+        "frameworkReferences": {
+          "Microsoft.NETCore.App": {
+            "privateAssets": "all"
+          },
+          "Microsoft.WindowsDesktop.App.WindowsForms": {
+            "privateAssets": "none"
+          }
+        },
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.302/PortableRuntimeIdentifierGraph.json"
+      }
+    }
+  },
+  "logs": [
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'WiimoteLib 1.7.0' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net8.0-windows7.0'. This package may not be fully compatible with your project.",
+      "libraryId": "WiimoteLib",
+      "targetGraphs": [
+        "net8.0-windows7.0"
+      ]
+    }
+  ]
+}

@@ -11,7 +11,7 @@ Play music with your Wii remote 🤯
 
 ## How to setup
 1. Go to [Releases](https://github.com/nickslick03/wiinote/releases) and download the latest release. Unzip the folder.
-2. Connect your wii remote using Winnusoft
+2. Connect your wii remote using Winnusoft.
 3. Open `wiinote-form.exe` in the unzipped `Release` folder.
 4. Click "Open Wiinote Webpage". You may be prompted to download the latest .NET runtime.
 

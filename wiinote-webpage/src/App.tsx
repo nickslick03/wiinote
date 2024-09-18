@@ -15,9 +15,25 @@ function App() {
   const [isHovering, setIsHovering] = createSignal(false)
   const [showMenu, setShowMenu] = createSignal(false)
   const [isInvertedOctaves, setIsInvertedOctaves] = createSignal(false)
-  const [autotoneMargin, setAutotoneMargin] = createSignal(.5)
-
+  const [autotoneMargin, setAutotoneMargin] = createSignal(.8)
+  const [isAutotoneOn, setIsAutotoneOn] = createSignal(false)
   const [baseSemitone, setBaseSemitone] = createSignal(0)
+
+  document.addEventListener('keydown', (e) => {
+    switch (e.key.toLowerCase()) {
+      case 'a':
+        setIsAutotoneOn(true);
+      break;
+    }
+  });
+
+  document.addEventListener('keyup', (e) => {
+    switch (e.key.toLowerCase()) {
+      case 'a':
+        setIsAutotoneOn(false);
+      break;
+    }
+  });
 
   let audioContext: AudioContext
   let oscillator: OscillatorNode
@@ -40,7 +56,7 @@ function App() {
   const handleMouseMove = (e: MouseEvent) => {
     const target = (e.target as HTMLDivElement)
     const octaveIndex = Math.floor((e.clientX / target.clientWidth) * OCTAVE_RANGE) + BASE_OCTAVE
-    const invert = isInvertedOctaves() && (octaveIndex - BASE_OCTAVE) % 2 === 1
+    const isInverted = isInvertedOctaves() && (octaveIndex - BASE_OCTAVE) % 2 === 1
     const octaveBlockWidth = target.clientWidth / OCTAVE_RANGE
 
     let semitone = ((1 - (e.clientY / target.clientHeight)) * NOTE_BLOCKS) - 0.5
@@ -48,9 +64,9 @@ function App() {
     const upperBound = (autotoneMargin() / 2) + .5
     const lowerBound = .5 - (autotoneMargin() / 2)
     const inMargin = upperBound > margin && lowerBound < margin
-    if (autotoneMargin() !== 0 && inMargin) {
+    if (isAutotoneOn() && inMargin) {
       semitone = Math.floor(semitone + .5)
-    } else if (autotoneMargin() !== 0) {
+    } else if (isAutotoneOn()) {
       const wholeSemitone = Math.floor(semitone)
       const decimal = semitone - wholeSemitone
       const range = 1 - autotoneMargin()
@@ -66,7 +82,7 @@ function App() {
       ? semitone * 2
       : 12
     const xAxisSemitone = (noteBlockXPos / (octaveBlockWidth / xAxisRange)) - (xAxisRange / 2)
-    const freq = getFrequency(C_FREQUENCIES[octaveIndex], ((invert ? 12 - semitone : semitone) + baseSemitone()) + xAxisSemitone)
+    const freq = getFrequency(C_FREQUENCIES[octaveIndex], ((isInverted ? 12 - semitone : semitone) + baseSemitone()) + xAxisSemitone)
 
     if (!isHovering()) {
       setIsHovering(true)
@@ -124,6 +140,27 @@ function App() {
                 value={isInvertedOctaves() ? "checked" : undefined}
                 onclick={() => setIsInvertedOctaves(o => !o)}
               />
+            </label>
+            <label class="flex">
+              <span class='pr-2'>Autotune Block Percentage: </span>
+              <input 
+                class='border-black border rounded-sm pl-1'
+                type="number" 
+                min={10} 
+                max={90} 
+                value={autotoneMargin() * 100} 
+                onChange={(e) => {
+                  const newMargin = +e.target.value / 100
+                  if (newMargin >= .1 && newMargin <= .9)
+                    setAutotoneMargin(newMargin)
+                }}
+                onblur={(e) => {
+                  const newMargin = +e.target.value / 100
+                  if (newMargin <= .1 || newMargin >= .9)
+                    e.target.value = (autotoneMargin() * 100).toString()
+                }}
+              />
+              <span class='pl-1'>%</span>
             </label>
           </form>
           <footer class='text-center'>

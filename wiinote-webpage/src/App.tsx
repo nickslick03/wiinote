@@ -50,7 +50,7 @@ function App() {
     const inMargin = upperBound > margin && lowerBound < margin
     if (autotoneMargin() !== 0 && inMargin) {
       semitone = Math.floor(semitone + .5)
-    } else {
+    } else if (autotoneMargin() !== 0) {
       const wholeSemitone = Math.floor(semitone)
       const decimal = semitone - wholeSemitone
       const range = 1 - autotoneMargin()

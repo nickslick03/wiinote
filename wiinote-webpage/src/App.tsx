@@ -15,6 +15,7 @@ function App() {
   const [isHovering, setIsHovering] = createSignal(false)
   const [showMenu, setShowMenu] = createSignal(false)
   const [isInvertedOctaves, setIsInvertedOctaves] = createSignal(false)
+  const [autotoneMargin, setAutotoneMargin] = createSignal(.5)
 
   const [baseSemitone, setBaseSemitone] = createSignal(0)
 
@@ -41,20 +42,32 @@ function App() {
     const octaveIndex = Math.floor((e.clientX / target.clientWidth) * OCTAVE_RANGE) + BASE_OCTAVE
     const invert = isInvertedOctaves() && (octaveIndex - BASE_OCTAVE) % 2 === 1
     const octaveBlockWidth = target.clientWidth / OCTAVE_RANGE
+
     let semitone = ((1 - (e.clientY / target.clientHeight)) * NOTE_BLOCKS) - 0.5
+    const margin = (semitone + 0.5) % 1
+    const upperBound = (autotoneMargin() / 2) + .5
+    const lowerBound = .5 - (autotoneMargin() / 2)
+    const inMargin = upperBound > margin && lowerBound < margin
+    if (autotoneMargin() !== 0 && inMargin) {
+      semitone = Math.floor(semitone + .5)
+    } else {
+      const wholeSemitone = Math.floor(semitone)
+      const decimal = semitone - wholeSemitone
+      const range = 1 - autotoneMargin()
+      semitone = wholeSemitone + (decimal - (autotoneMargin() / 2)) * (1 / range)
+    }
+
+    const noteBlockXPos = e.clientX - ((octaveIndex - BASE_OCTAVE) / OCTAVE_RANGE * target.clientWidth)
     const outer = 
-      Math.floor((e.clientX - ((octaveIndex - BASE_OCTAVE) / OCTAVE_RANGE * target.clientWidth)) / (octaveBlockWidth / 2)) === (((octaveIndex - BASE_OCTAVE) % 2 === 0) ? 1 : 0)
+      Math.floor(noteBlockXPos / (octaveBlockWidth / 2)) === (((octaveIndex - BASE_OCTAVE) % 2 === 0) ? 1 : 0)
     const xAxisRange = isInvertedOctaves() && outer
       ? 24 - (semitone * 2)
       : isInvertedOctaves()
       ? semitone * 2
-      : 12;
-    let xAxisSemitone = ((e.clientX - ((octaveIndex - BASE_OCTAVE) / OCTAVE_RANGE * target.clientWidth)) / (octaveBlockWidth / xAxisRange)) - (xAxisRange / 2)
-    if (invert) {
-      semitone = 12 - semitone
-    }
-    //console.log({ octaveIndex, semitone, outer, xAxisSemitone, xAxisRange })
-    const freq = getFrequency(C_FREQUENCIES[octaveIndex], (semitone + baseSemitone()) + xAxisSemitone)
+      : 12
+    const xAxisSemitone = (noteBlockXPos / (octaveBlockWidth / xAxisRange)) - (xAxisRange / 2)
+    const freq = getFrequency(C_FREQUENCIES[octaveIndex], ((invert ? 12 - semitone : semitone) + baseSemitone()) + xAxisSemitone)
+
     if (!isHovering()) {
       setIsHovering(true)
       const start = startOscillator(audioContext, freq)

@@ -20,6 +20,7 @@ namespace wiimote_form
         static int nextOctave = 0;
 
         static bool isMouseDown = false;
+        static bool isADown = false;
 
         int octaveSpeed = 20;
 
@@ -130,6 +131,7 @@ namespace wiimote_form
 
         void wiimote_WiimoteChanged(object sender, WiimoteChangedEventArgs e)
         {
+            var A = e.WiimoteState.ButtonState.A;
             var B = e.WiimoteState.ButtonState.B;
             var left = e.WiimoteState.ButtonState.Left;
             var right = e.WiimoteState.ButtonState.Right;
@@ -143,11 +145,8 @@ namespace wiimote_form
                     int X;
                     int Y;
 
-                    int irX = irSensor.RawPosition.X;
                     int irY = irSensor.RawPosition.Y;
                     Y = (int)(((double)irY / IR_Y_RANGE) * height);
-
-                    int mouseX = width - (int)(((double)irX / IR_X_RANGE) * width);
 
                     if (currentOctave == nextOctave)
                     {
@@ -184,16 +183,28 @@ namespace wiimote_form
                     SetCursorPos(X, Y);
                 }
 
-                if (B && !isMouseDown)
-                {
-                    TriggerMouseDown();
-                    isMouseDown = true;
-                }
-                else if (!B && isMouseDown)
-                {
-                    TriggerMouseUp();
-                    isMouseDown = false;
-                }
+                
+            }
+            if (A && !isADown)
+            {
+                SendKeys.SendWait("a");
+                isADown = true;
+            }
+            else if (!A && isADown)
+            {
+                SendKeys.SendWait("a");
+                isADown = false;
+            }
+
+            if (B && !isMouseDown)
+            {
+                TriggerMouseDown();
+                isMouseDown = true;
+            }
+            else if (!B && isMouseDown)
+            {
+                TriggerMouseUp();
+                isMouseDown = false;
             }
         }
 

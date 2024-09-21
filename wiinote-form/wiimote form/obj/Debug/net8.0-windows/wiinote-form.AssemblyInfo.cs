@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("wiinote-form")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7400072211fb9d86ea7d1c27e51a33c9f2cc72c3")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+10abbea506d3b486c6b2e611f6844e470b652384")]
 [assembly: System.Reflection.AssemblyProductAttribute("wiinote-form")]
 [assembly: System.Reflection.AssemblyTitleAttribute("wiinote-form")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

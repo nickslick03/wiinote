@@ -16,21 +16,14 @@ function App() {
   const [showMenu, setShowMenu] = createSignal(false)
   const [isInvertedOctaves, setIsInvertedOctaves] = createSignal(false)
   const [autotoneMargin, setAutotoneMargin] = createSignal(.8)
-  const [isAutotoneOn, setIsAutotoneOn] = createSignal(false)
+  const [isAutotoneOn, setIsAutotoneOn] = createSignal(true)
   const [baseSemitone, setBaseSemitone] = createSignal(0)
+
 
   document.addEventListener('keydown', (e) => {
     switch (e.key.toLowerCase()) {
       case 'a':
-        setIsAutotoneOn(true);
-      break;
-    }
-  });
-
-  document.addEventListener('keyup', (e) => {
-    switch (e.key.toLowerCase()) {
-      case 'a':
-        setIsAutotoneOn(false);
+        setIsAutotoneOn(autotone => !autotone);
       break;
     }
   });
@@ -140,6 +133,17 @@ function App() {
                 value={isInvertedOctaves() ? "checked" : undefined}
                 onclick={() => setIsInvertedOctaves(o => !o)}
               />
+            </label>
+            <label class='flex'>
+              Holding A button turns
+              <select 
+                class='text-sm border-black border rounded-sm font-bold mx-2'
+                onChange={(e) => setIsAutotoneOn(e.target.value === 'on')}
+              >
+                <option value="on">on</option>
+                <option value="off" selected>off</option>
+              </select>
+                autotune
             </label>
             <label class="flex">
               <span class='pr-2'>Autotune Block Percentage: </span>

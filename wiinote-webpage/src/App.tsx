@@ -134,17 +134,6 @@ function App() {
                 onclick={() => setIsInvertedOctaves(o => !o)}
               />
             </label>
-            <label class='flex'>
-              Holding A button turns
-              <select 
-                class='text-sm border-black border rounded-sm font-bold mx-2'
-                onChange={(e) => setIsAutotoneOn(e.target.value === 'on')}
-              >
-                <option value="on">on</option>
-                <option value="off" selected>off</option>
-              </select>
-                autotune
-            </label>
             <label class="flex">
               <span class='pr-2'>Autotune Block Percentage: </span>
               <input 

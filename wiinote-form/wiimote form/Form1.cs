@@ -196,12 +196,12 @@ namespace wiimote_form
                 isADown = false;
             }
 
-            if (B && !isMouseDown)
+            if ((B || A) && !isMouseDown)
             {
                 TriggerMouseDown();
                 isMouseDown = true;
             }
-            else if (!B && isMouseDown)
+            else if (!(B || A) && isMouseDown)
             {
                 TriggerMouseUp();
                 isMouseDown = false;

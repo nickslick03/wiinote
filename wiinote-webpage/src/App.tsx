@@ -16,14 +16,14 @@ function App() {
   const [showMenu, setShowMenu] = createSignal(false)
   const [isInvertedOctaves, setIsInvertedOctaves] = createSignal(false)
   const [autotoneMargin, setAutotoneMargin] = createSignal(.8)
-  const [isAutotoneOn, setIsAutotoneOn] = createSignal(true)
+  const [isAutotoneOn, setIsAutotoneOn] = createSignal(false)
   const [baseSemitone, setBaseSemitone] = createSignal(0)
 
 
   document.addEventListener('keydown', (e) => {
     switch (e.key.toLowerCase()) {
       case 'a':
-        setIsAutotoneOn(autotone => !autotone);
+        setIsAutotoneOn(a => !a);
       break;
     }
   });

@@ -12,11 +12,12 @@ Play music with your Wii remote 🤯
 ## How to setup
 1. Go to [Releases](https://github.com/nickslick03/wiinote/releases) and download the latest release. Unzip the folder.
 2. Connect your wii remote using Winnusoft.
-3. Open `wiinote-form.exe` in the unzipped `Release` folder.
+3. Open `wiinote-form.exe` in the unzipped `Publish` folder.
 4. Click "Open Wiinote Webpage". You may be prompted to download the latest .NET runtime.
 
 ## How to use
 - Point the Wii remote at the IR sensor.
+- Press B to play an unfiltered note and press A to play an autotuned note.
 - move the Wii remote up and down to change the notes.
 - press the left and right d-pad buttons to change the octaves.
 - Use the settings box in the windows form to change the Wii remote properties.

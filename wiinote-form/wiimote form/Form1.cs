@@ -4,6 +4,8 @@ using WiimoteLib;
 using static System.Windows.Forms.AxHost;
 using System.Windows.Forms;
 using System.Security.Policy;
+using NAudio.CoreAudioApi;
+
 
 namespace wiimote_form
 {
@@ -23,6 +25,11 @@ namespace wiimote_form
         static bool isADown = false;
 
         int octaveSpeed = 20;
+
+        int roll = 0;
+
+        MMDeviceEnumerator deviceEnumerator;
+        MMDevice device;
 
         [StructLayout(LayoutKind.Sequential)]
         public struct POINT
@@ -97,6 +104,31 @@ namespace wiimote_form
             SendInput(1, inputs, Marshal.SizeOf(typeof(INPUT)));
         }
 
+        //void SetMasterVolume(int volumePercentage)
+        //{
+
+        //    if (InvokeRequired)
+        //    {
+        //        // If we're on a different thread, invoke this on the UI thread
+        //        Invoke(new Action<int>(SetMasterVolume), volumePercentage);
+        //        return;
+        //    }
+        //    // Ensure volumePercentage is within 0 to 100 range
+        //    if (volumePercentage < 0) volumePercentage = 0;
+        //    if (volumePercentage > 100) volumePercentage = 100;
+
+        //    // Convert percentage to a volume scalar (0.0 to 1.0)
+        //    float volumeScalar = volumePercentage / 100.0f;
+
+        //    // Set the master volume
+        //    if (device != null)
+        //    {
+
+        //        device.AudioEndpointVolume.MasterVolumeLevelScalar = volumeScalar;
+        //    }
+        //}
+                
+
         public Form1()
         {
             InitializeComponent();
@@ -115,6 +147,8 @@ namespace wiimote_form
                 // Set report type to receive button data
                 wiimote.SetReportType(InputReport.Buttons, true);
                 wiimote.SetReportType(InputReport.IRAccel, true);
+                wiimote.SetReportType(InputReport.IRExtensionAccel, true);
+
                 wiimote.WiimoteState.IRState.Mode = IRMode.Extended;
                 settingsBox.Visible = true;
                 octaveSpeedTextbox.Text = octaveSpeed.ToString();
@@ -123,6 +157,9 @@ namespace wiimote_form
             {
                 errorLabel.Visible = true;
             }
+
+            deviceEnumerator = new MMDeviceEnumerator();
+            device = deviceEnumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
 
         }
 
@@ -185,6 +222,7 @@ namespace wiimote_form
 
                 
             }
+
             if (A && !isADown)
             {
                 SendKeys.SendWait("a");
@@ -206,6 +244,14 @@ namespace wiimote_form
                 TriggerMouseUp();
                 isMouseDown = false;
             }
+
+            //int newRoll = (int)((e.WiimoteState.NunchukState.AccelState.Values.X + 1) * 50);
+
+            //if (roll != newRoll)
+            //{
+            //    SetMasterVolume(newRoll);
+            //    roll = newRoll;
+            //}
         }
 
         private void Form1_Load(object sender, EventArgs e)

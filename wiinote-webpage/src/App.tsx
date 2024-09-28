@@ -18,8 +18,6 @@ function App() {
   const [autotoneMargin, setAutotoneMargin] = createSignal(.8)
   const [isAutotoneOn, setIsAutotoneOn] = createSignal(false)
   const [baseSemitone, setBaseSemitone] = createSignal(0)
-  const [volumeLevel, setVolumeLevel] = createSignal(1)
-  const [mouseDown, setMouseDown] = createSignal(false)
 
 
   document.addEventListener('keydown', (e) => {
@@ -27,14 +25,6 @@ function App() {
       case 'a':
         setIsAutotoneOn(a => !a)
       break
-      // case 'ArrowUp':
-      //   setVolumeLevel(v => Math.min(v + .1, 1))
-      //   if (mouseDown()) gainNode.gain.value = volumeLevel()
-      // break
-      // case 'ArrowDown':
-      //   setVolumeLevel(v => Math.max(v - .1, 0))
-      //   if (mouseDown()) gainNode.gain.value = volumeLevel()
-      // break
     }
   })
 
@@ -176,11 +166,9 @@ function App() {
         class='absolute top-0 left-0 w-screen h-screen z-10'
         onMouseMove={handleMouseMove}
         onMouseDown={() => {
-          setMouseDown(true)
-          setVolume(audioContext, gainNode, volumeLevel(), 0.1)
+          setVolume(audioContext, gainNode, 1, 0.1)
         }}
         onMouseUp={() => {
-          setMouseDown(false)
           setVolume(audioContext, gainNode, 0, 0.1)
         }}
       ></div>

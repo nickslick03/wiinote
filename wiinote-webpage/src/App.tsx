@@ -1,6 +1,6 @@
 import { createSignal, For } from 'solid-js'
 
-import { setVolume, startOscillator, updateFrequency } from './lib/oscillator'
+import { Audio } from './lib/oscillator'
 import { C_FREQUENCIES } from './static/frequencies'
 import { getFrequency } from './lib/getFrequency'
 import { NOTE_LETTERS } from './static/notesLetters'
@@ -9,15 +9,18 @@ const NOTE_BLOCKS = 13
 const BASE_OCTAVE = 2
 const OCTAVE_RANGE = 6
 
+
 function App() {
 
   const [initialClick, setInitialClick] = createSignal(false)
-  const [isHovering, setIsHovering] = createSignal(false)
   const [showMenu, setShowMenu] = createSignal(false)
   const [isInvertedOctaves, setIsInvertedOctaves] = createSignal(false)
   const [autotoneMargin, setAutotoneMargin] = createSignal(.8)
   const [isAutotoneOn, setIsAutotoneOn] = createSignal(false)
   const [baseSemitone, setBaseSemitone] = createSignal(0)
+  const [mouseDown, setMouseDown] = createSignal(false)
+  const [currentFreq, setCurrentFreq] = createSignal(0)
+  const [sustain, setSustain] = createSignal(.1)
 
 
   document.addEventListener('keydown', (e) => {
@@ -28,12 +31,9 @@ function App() {
     }
   })
 
-  let audioContext: AudioContext
-  let oscillator: OscillatorNode
-  let gainNode: GainNode
+  let audio: Audio;
 
   const handleInitialClick = () => {
-    audioContext = new window.AudioContext()
     setInitialClick(true)
   }
 
@@ -77,15 +77,12 @@ function App() {
     const xAxisSemitone = (noteBlockXPos / (octaveBlockWidth / xAxisRange)) - (xAxisRange / 2)
     const freq = getFrequency(C_FREQUENCIES[octaveIndex], ((isInverted ? 12 - semitone : semitone) + baseSemitone()) + xAxisSemitone)
 
-    if (!isHovering()) {
-      setIsHovering(true)
-      const start = startOscillator(audioContext, freq)
-      oscillator = start.oscillator
-      gainNode = start.gainNode
-      setVolume(audioContext, gainNode, 0, 0.1)
-    } else {
-      updateFrequency(audioContext, oscillator, freq)
+    if (!audio) {
+      audio = new Audio(sustain())
     }
+    setCurrentFreq(freq)
+    if (mouseDown())
+      audio.updateFrequency(freq)
   }
 
   return (
@@ -155,6 +152,21 @@ function App() {
               />
               <span class='pl-1'>%</span>
             </label>
+            <label class="flex">
+              <span class='pr-2'>Sustain Note Length: </span>
+              <input 
+                class='border-black border rounded-sm pl-1'
+                type="number" 
+                min={0}
+                max={1}
+                step={.01}
+                value={sustain()}
+                onChange={(e) => {
+                  setSustain(+e.target.value)
+                  audio.sustainDuration = sustain()
+                }}
+              />
+            </label>
           </form>
           <footer class='text-center'>
             <a href="https://www.linkedin.com/in/nicholas-epps-597b94295/" class='text-sm text-purple-950 underline'>Nicholas Epps</a>
@@ -166,10 +178,13 @@ function App() {
         class='absolute top-0 left-0 w-screen h-screen z-10'
         onMouseMove={handleMouseMove}
         onMouseDown={() => {
-          setVolume(audioContext, gainNode, 1, 0.1)
+          setMouseDown(true)
+          audio.nextOscillator(currentFreq())
+          audio.setVolume(1)
         }}
         onMouseUp={() => {
-          setVolume(audioContext, gainNode, 0, 0.1)
+          setMouseDown(false)
+          audio.killOscillator()
         }}
       ></div>
       <div class='grid grid-cols-6 h-screen select-none'>
